@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router';
 import { BarChart3, BookOpen, Inbox, Sparkles, Ticket, UserSquare2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useWorkspace } from '@/features/workspace/workspace-provider';
 import { fetchMembers } from '@/features/workspace/api';
 
@@ -16,9 +17,9 @@ const QUICK_LINKS = [
 ] as const;
 
 export function OverviewPage() {
-  const { workspace } = useWorkspace();
+  const { workspace, isLoading: workspaceLoading } = useWorkspace();
 
-  const { data: members } = useQuery({
+  const { data: members, isLoading: membersLoading } = useQuery({
     queryKey: ['workspace', workspace?.id, 'members'],
     queryFn: () => fetchMembers(workspace!.id),
     enabled: Boolean(workspace),
@@ -37,19 +38,31 @@ export function OverviewPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Team members</CardDescription>
-            <CardTitle className="text-3xl">{members?.length ?? '—'}</CardTitle>
+            {membersLoading ? (
+              <Skeleton className="h-8 w-12" />
+            ) : (
+              <CardTitle className="text-3xl">{members?.length ?? 0}</CardTitle>
+            )}
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Industry</CardDescription>
-            <CardTitle className="text-lg capitalize">{workspace?.industry ?? 'Not set'}</CardTitle>
+            {workspaceLoading ? (
+              <Skeleton className="h-7 w-24" />
+            ) : (
+              <CardTitle className="text-lg capitalize">{workspace?.industry ?? 'Not set'}</CardTitle>
+            )}
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Workspace URL</CardDescription>
-            <CardTitle className="text-lg">/{workspace?.slug}</CardTitle>
+            {workspaceLoading ? (
+              <Skeleton className="h-7 w-24" />
+            ) : (
+              <CardTitle className="text-lg">/{workspace?.slug}</CardTitle>
+            )}
           </CardHeader>
         </Card>
       </div>

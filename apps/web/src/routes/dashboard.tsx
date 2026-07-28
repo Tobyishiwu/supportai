@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/providers/auth-provider';
 import { WorkspaceProvider } from '@/features/workspace/workspace-provider';
 import { DashboardLayout } from '@/layouts/dashboard-layout';
+import { ErrorBoundary } from '@/components/error-boundary';
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardRoute,
@@ -26,7 +27,9 @@ function DashboardRoute() {
   return (
     <WorkspaceProvider>
       <DashboardLayout>
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </DashboardLayout>
     </WorkspaceProvider>
   );

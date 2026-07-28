@@ -6,6 +6,8 @@ import { routeTree } from './routeTree.gen';
 import { QueryProvider } from '@/providers/query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { AuthProvider } from '@/providers/auth-provider';
+import { ErrorBoundary } from '@/components/error-boundary';
+import { Toaster } from '@/components/ui/sonner';
 
 const router = createRouter({ routeTree, defaultPreload: 'intent' });
 
@@ -17,13 +19,16 @@ declare module '@tanstack/react-router' {
 
 function App() {
   return (
-    <QueryProvider>
-      <ThemeProvider>
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryProvider>
+    <ErrorBoundary>
+      <QueryProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <RouterProvider router={router} />
+            <Toaster position="bottom-right" />
+          </AuthProvider>
+        </ThemeProvider>
+      </QueryProvider>
+    </ErrorBoundary>
   );
 }
 

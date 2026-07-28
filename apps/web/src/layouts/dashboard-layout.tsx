@@ -5,6 +5,7 @@ import {
   BookOpen,
   Inbox,
   LayoutDashboard,
+  Search,
   Settings,
   Sparkles,
   Ticket,
@@ -24,6 +25,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { CommandPalette } from '@/components/command-palette';
+import { NotificationBell } from '@/features/notifications/components/notification-bell';
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
@@ -104,11 +107,26 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 items-center justify-end border-b border-border px-6">
-          <ThemeToggle />
+        <header className="flex h-14 items-center justify-between border-b border-border px-6">
+          <button
+            type="button"
+            onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+            className="flex items-center gap-2 rounded-md border border-input px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent/60"
+          >
+            <Search className="h-3.5 w-3.5" />
+            Quick search
+            <kbd className="ml-4 rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium">
+              ⌘K
+            </kbd>
+          </button>
+          <div className="flex items-center gap-1">
+            <NotificationBell />
+            <ThemeToggle />
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-8">{children}</main>
       </div>
+      <CommandPalette />
     </div>
   );
 }
