@@ -21,9 +21,30 @@ bullRedis.on('error', (error) => {
   logger.error({ err: error }, 'BullMQ Redis connection error');
 });
 
+/**
+ * `lazyConnect` delays the real connection until first use, not until this
+ * function runs — BullMQ's Queue constructors and the rate limiter's Redis
+ * store both send a command as soon as their modules are imported, which is
+ * before this ever executes. Calling `.connect()` on a client ioredis has
+ * already started connecting throws, so this waits for that in-flight
+ * connection instead of duplicating it.
+ */
+async function ensureConnected(client: Redis): Promise<void> {
+  if (client.status === 'wait' || client.status === 'end') {
+    await client.connect();
+    return;
+  }
+  if (client.status === 'ready') return;
+
+  await new Promise<void>((resolve, reject) => {
+    client.once('ready', resolve);
+    client.once('error', reject);
+  });
+}
+
 export async function connectRedis(): Promise<void> {
-  await redis.connect();
-  await bullRedis.connect();
+  await ensureConnected(redis);
+  await ensureConnected(bullRedis);
   logger.info('Connected to Redis');
 }
 
