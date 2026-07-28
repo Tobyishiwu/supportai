@@ -53,6 +53,23 @@ Set at least `GEMINI_API_KEY` (or `OPENAI_API_KEY`) in `apps/api/.env` to
 exercise the AI chat/knowledge features — everything else works without an
 AI key configured (auth, workspaces, team, inbox UI, tickets).
 
+## Testing
+
+Both apps have a real automated test suite (Vitest):
+
+```bash
+pnpm test              # both apps
+pnpm --filter @supportai/api test   # backend only: unit tests (jwt, password,
+                                     # slugify, chunking, validation schemas)
+                                     # + Supertest integration tests (auth guard,
+                                     # request validation, health check) — no
+                                     # live MongoDB required, but a reachable
+                                     # Redis is assumed, same as local dev
+pnpm --filter @supportai/web test   # frontend only: unit tests (cn, API error
+                                     # mapping) + component/form tests
+                                     # (Button, LoginForm) via Testing Library
+```
+
 ## Deploying
 
 See [`docs/deployment.md`](./docs/deployment.md) for the full path to a live
