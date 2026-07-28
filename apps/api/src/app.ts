@@ -12,6 +12,8 @@ import { userRouter } from './modules/users/user.routes.js';
 import { workspaceRouter } from './modules/workspaces/workspace.routes.js';
 import { notificationRouter } from './modules/notifications/notification.routes.js';
 import { knowledgeRouter } from './modules/knowledge/knowledge.routes.js';
+import { aiSettingsRouter } from './modules/ai/settings/ai-settings.routes.js';
+import { publicChatRouter } from './modules/conversations/public-chat.routes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -40,6 +42,8 @@ export function createApp(): Express {
   app.use('/api/v1/workspaces', workspaceRouter);
   app.use('/api/v1/workspaces/:workspaceId/notifications', notificationRouter);
   app.use('/api/v1/workspaces/:workspaceId/knowledge', knowledgeRouter);
+  app.use('/api/v1/workspaces/:workspaceId/ai/settings', aiSettingsRouter);
+  app.use('/api/v1/public/:workspaceSlug/chat', publicChatRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

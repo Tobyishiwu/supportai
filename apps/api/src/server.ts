@@ -1,9 +1,11 @@
+import { createServer } from 'node:http';
 import { env } from './config/env.js';
 import { logger } from './config/logger.js';
 import { connectMongo, disconnectMongo } from './db/mongoose.js';
 import { connectRedis, disconnectRedis } from './db/redis.js';
 import { seedPermissions } from './modules/workspaces/permissions.seed.js';
 import { startKnowledgeWorker } from './modules/knowledge/queue/knowledge.worker.js';
+import { initSocketServer } from './realtime/socket.js';
 import { createApp } from './app.js';
 
 async function main(): Promise<void> {
@@ -14,13 +16,16 @@ async function main(): Promise<void> {
   const knowledgeWorker = startKnowledgeWorker();
 
   const app = createApp();
-  const server = app.listen(env.PORT, () => {
+  const httpServer = createServer(app);
+  initSocketServer(httpServer);
+
+  httpServer.listen(env.PORT, () => {
     logger.info(`SupportAI API listening on port ${env.PORT}`);
   });
 
   const shutdown = async (signal: string) => {
     logger.info(`Received ${signal}, shutting down gracefully`);
-    server.close();
+    httpServer.close();
     await knowledgeWorker.close();
     await Promise.all([disconnectMongo(), disconnectRedis()]);
     process.exit(0);

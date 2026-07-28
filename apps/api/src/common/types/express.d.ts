@@ -13,6 +13,15 @@ declare global {
         role: string;
         permissions: PermissionKey[];
       };
+      publicWorkspace?: {
+        id: string;
+        slug: string;
+      };
+      widgetAuth?: {
+        workspaceId: string;
+        customerId: string;
+        conversationId: string;
+      };
     }
   }
 }

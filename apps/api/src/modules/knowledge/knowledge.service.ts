@@ -114,12 +114,19 @@ export async function deleteDocument(workspaceId: string, documentId: string): P
  * "knowledge_vector_index" on KnowledgeChunk.embedding (see
  * docs/database-design.md) — used by the Phase 4 AI orchestration layer.
  */
+export interface RetrievedChunk {
+  _id: Types.ObjectId;
+  content: string;
+  document: Types.ObjectId;
+  score: number;
+}
+
 export async function retrieveRelevantChunks(
   workspaceId: string,
   queryEmbedding: number[],
   limit = 5,
-): Promise<{ content: string; document: Types.ObjectId; score: number }[]> {
-  return KnowledgeChunk.aggregate([
+): Promise<RetrievedChunk[]> {
+  return KnowledgeChunk.aggregate<RetrievedChunk>([
     {
       $vectorSearch: {
         index: 'knowledge_vector_index',

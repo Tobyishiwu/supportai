@@ -29,3 +29,12 @@ export const authRateLimiter = rateLimit({
   store: redisStore('rl:auth:'),
   handler: (_req, _res, next) => next(AppError.rateLimited('Too many attempts. Please try again later.')),
 });
+
+export const publicChatRateLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: redisStore('rl:public-chat:'),
+  handler: (_req, _res, next) => next(AppError.rateLimited('Too many messages. Please slow down.')),
+});
