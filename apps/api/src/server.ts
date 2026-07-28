@@ -3,12 +3,15 @@ import { logger } from './config/logger.js';
 import { connectMongo, disconnectMongo } from './db/mongoose.js';
 import { connectRedis, disconnectRedis } from './db/redis.js';
 import { seedPermissions } from './modules/workspaces/permissions.seed.js';
+import { startKnowledgeWorker } from './modules/knowledge/queue/knowledge.worker.js';
 import { createApp } from './app.js';
 
 async function main(): Promise<void> {
   await connectMongo();
   await connectRedis();
   await seedPermissions();
+
+  const knowledgeWorker = startKnowledgeWorker();
 
   const app = createApp();
   const server = app.listen(env.PORT, () => {
@@ -18,6 +21,7 @@ async function main(): Promise<void> {
   const shutdown = async (signal: string) => {
     logger.info(`Received ${signal}, shutting down gracefully`);
     server.close();
+    await knowledgeWorker.close();
     await Promise.all([disconnectMongo(), disconnectRedis()]);
     process.exit(0);
   };

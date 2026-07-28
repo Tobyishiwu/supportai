@@ -169,6 +169,24 @@ order         number          — position within source document
 compound index: (workspace, document, order)
 ```
 
+**Required Atlas Search index** (create via Atlas UI or `mongosh`/Admin API — not
+something Mongoose can define, since it's a cluster-level search index):
+
+```json
+{
+  "name": "knowledge_vector_index",
+  "type": "vectorSearch",
+  "fields": [
+    { "type": "vector", "path": "embedding", "numDimensions": 768, "similarity": "cosine" },
+    { "type": "filter", "path": "workspace" }
+  ]
+}
+```
+
+`numDimensions` must match the configured embedding provider (768 for Gemini's
+`text-embedding-004`, 1536 for OpenAI's `text-embedding-3-small`) — if a
+workspace switches providers, its existing chunks must be re-embedded.
+
 ### AISetting
 Per-workspace AI configuration — one document per workspace.
 ```

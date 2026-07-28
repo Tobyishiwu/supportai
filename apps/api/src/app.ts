@@ -11,6 +11,7 @@ import { authRouter } from './modules/auth/auth.routes.js';
 import { userRouter } from './modules/users/user.routes.js';
 import { workspaceRouter } from './modules/workspaces/workspace.routes.js';
 import { notificationRouter } from './modules/notifications/notification.routes.js';
+import { knowledgeRouter } from './modules/knowledge/knowledge.routes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -38,6 +39,7 @@ export function createApp(): Express {
   app.use('/api/v1/users', userRouter);
   app.use('/api/v1/workspaces', workspaceRouter);
   app.use('/api/v1/workspaces/:workspaceId/notifications', notificationRouter);
+  app.use('/api/v1/workspaces/:workspaceId/knowledge', knowledgeRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

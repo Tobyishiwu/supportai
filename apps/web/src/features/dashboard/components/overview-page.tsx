@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { BarChart3, BookOpen, Inbox, Sparkles, Ticket, UserSquare2 } from 'lucide-react';
+import { BarChart3, Inbox, Sparkles, Ticket, UserSquare2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -9,7 +9,6 @@ import { fetchMembers } from '@/features/workspace/api';
 
 const QUICK_LINKS = [
   { to: '/dashboard/inbox', icon: Inbox, title: 'Live Chat Inbox', phase: 'Phase 5' },
-  { to: '/dashboard/knowledge-base', icon: BookOpen, title: 'Knowledge Base', phase: 'Phase 3' },
   { to: '/dashboard/ai-settings', icon: Sparkles, title: 'AI Settings', phase: 'Phase 4' },
   { to: '/dashboard/analytics', icon: BarChart3, title: 'Analytics', phase: 'Phase 6' },
   { to: '/dashboard/customers', icon: UserSquare2, title: 'Customers', phase: 'Phase 5' },
