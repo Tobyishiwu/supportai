@@ -12,6 +12,7 @@ import type { ConversationStatus } from '@/features/inbox/types';
 import { fetchMembers } from '@/features/workspace/api';
 import { fetchTags, createTag } from '@/features/tags/api';
 import { getApiErrorMessage } from '@/lib/api-error';
+import { CopilotPanel } from '@/features/copilot/components/copilot-panel';
 
 export function ConversationDetail({ workspaceId, conversationId }: { workspaceId: string; conversationId: string }) {
   const queryClient = useQueryClient();
@@ -88,6 +89,7 @@ export function ConversationDetail({ workspaceId, conversationId }: { workspaceI
   const activeTagIds = new Set(conversation.tags.map((t) => t.id));
 
   return (
+    <div className="flex min-w-0 flex-1">
     <div className="flex min-w-0 flex-1 flex-col">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3">
         <div>
@@ -245,6 +247,16 @@ export function ConversationDetail({ workspaceId, conversationId }: { workspaceI
           </Button>
         </div>
       </div>
+    </div>
+      <CopilotPanel
+        key={conversationId}
+        workspaceId={workspaceId}
+        conversationId={conversationId}
+        onUseSuggestion={(text) => {
+          setIsNote(false);
+          setReply(text);
+        }}
+      />
     </div>
   );
 }

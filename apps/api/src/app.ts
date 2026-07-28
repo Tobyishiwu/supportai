@@ -18,6 +18,8 @@ import { conversationRouter } from './modules/conversations/conversation.routes.
 import { tagRouter } from './modules/tags/tag.routes.js';
 import { customerRouter } from './modules/customers/customer.routes.js';
 import { ticketRouter } from './modules/tickets/ticket.routes.js';
+import { copilotRouter } from './modules/ai/copilot/copilot.routes.js';
+import { analyticsRouter } from './modules/analytics/analytics.routes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -52,6 +54,11 @@ export function createApp(): Express {
   app.use('/api/v1/workspaces/:workspaceId/tags', tagRouter);
   app.use('/api/v1/workspaces/:workspaceId/customers', customerRouter);
   app.use('/api/v1/workspaces/:workspaceId/tickets', ticketRouter);
+  app.use(
+    '/api/v1/workspaces/:workspaceId/conversations/:conversationId/copilot',
+    copilotRouter,
+  );
+  app.use('/api/v1/workspaces/:workspaceId/analytics', analyticsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

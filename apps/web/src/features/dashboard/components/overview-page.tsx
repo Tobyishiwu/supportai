@@ -1,13 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
-import { BarChart3 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useWorkspace } from '@/features/workspace/workspace-provider';
 import { fetchMembers } from '@/features/workspace/api';
-
-const QUICK_LINKS = [{ to: '/dashboard/analytics', icon: BarChart3, title: 'Analytics', phase: 'Phase 6' }] as const;
 
 export function OverviewPage() {
   const { workspace, isLoading: workspaceLoading } = useWorkspace();
@@ -58,29 +53,6 @@ export function OverviewPage() {
             )}
           </CardHeader>
         </Card>
-      </div>
-
-      <div>
-        <h2 className="mb-3 text-sm font-medium text-muted-foreground">Build out your workspace</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {QUICK_LINKS.map(({ to, icon: Icon, title, phase }) => (
-            <Link key={to} to={to}>
-              <Card className="h-full transition-colors hover:border-primary/50">
-                <CardContent className="flex items-start gap-3 py-5">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">{title}</p>
-                    <Badge variant="secondary" className="mt-1.5">
-                      {phase}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
       </div>
     </div>
   );
