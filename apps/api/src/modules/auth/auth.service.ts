@@ -5,9 +5,17 @@ import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../com
 import {
   createRefreshSession,
   isRefreshSessionValid,
+  revokeAllRefreshSessions,
   revokeRefreshSession,
   rotateRefreshSession,
 } from '../../common/auth/refresh-session.store.js';
+import {
+  consumePasswordResetToken,
+  createPasswordResetToken,
+} from '../../common/auth/password-reset.store.js';
+import { env } from '../../config/env.js';
+import { enqueueEmail } from '../email/email.queue.js';
+import { renderPasswordResetEmail } from '../email/templates/password-reset-email.js';
 import { createWorkspaceForOwner } from '../workspaces/workspace.service.js';
 import type { AuthTokens, LoginInput, RegisterInput } from './auth.types.js';
 
@@ -82,4 +90,27 @@ export async function getCurrentUser(userId: string): Promise<UserDoc> {
   const user = await User.findById(userId);
   if (!user) throw AppError.unauthorized();
   return user;
+}
+
+/** No-ops silently for an unknown email — the caller always returns a generic response, to avoid leaking which emails have accounts. */
+export async function requestPasswordReset(email: string): Promise<void> {
+  const user = await User.findOne({ email });
+  if (!user) return;
+
+  const token = await createPasswordResetToken(String(user._id));
+  const resetUrl = `${env.WEB_APP_URL}/reset-password?token=${token}`;
+  const { subject, html } = renderPasswordResetEmail({ name: user.name, resetUrl });
+  await enqueueEmail({ to: user.email, subject, html });
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
+  const userId = await consumePasswordResetToken(token);
+  if (!userId) throw AppError.unauthorized('This password reset link is invalid or has expired');
+
+  const user = await User.findById(userId);
+  if (!user) throw AppError.unauthorized('This password reset link is invalid or has expired');
+
+  user.passwordHash = await hashPassword(newPassword);
+  await user.save();
+  await revokeAllRefreshSessions(userId);
 }

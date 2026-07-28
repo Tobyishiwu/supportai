@@ -28,6 +28,13 @@ const envSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
+
+  // Optional: without it, transactional emails (invites, password reset) are
+  // logged and skipped rather than sent — everything else works unaffected.
+  RESEND_API_KEY: z.string().optional(),
+  // Resend's shared sandbox sender — works out of the box with no domain
+  // verification, fine for dev; set a verified sender for production.
+  EMAIL_FROM: z.string().default('SupportAI <onboarding@resend.dev>'),
 });
 
 function loadEnv() {

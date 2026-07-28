@@ -48,3 +48,15 @@ export async function me(req: Request, res: Response): Promise<void> {
   const user = await authService.getCurrentUser(req.auth!.userId);
   res.json({ data: { user } });
 }
+
+export async function forgotPassword(req: Request, res: Response): Promise<void> {
+  await authService.requestPasswordReset(req.body.email);
+  res.json({
+    data: { message: "If an account exists for that email, we've sent password reset instructions." },
+  });
+}
+
+export async function resetPassword(req: Request, res: Response): Promise<void> {
+  await authService.resetPassword(req.body.token, req.body.password);
+  res.json({ data: { message: 'Your password has been reset. Please log in.' } });
+}

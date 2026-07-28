@@ -8,6 +8,9 @@ import { Subscription } from '../../models/subscription.model.js';
 import { User } from '../../models/user.model.js';
 import { AppError } from '../../common/errors/app-error.js';
 import { slugify } from '../../common/utils/slugify.js';
+import { env } from '../../config/env.js';
+import { enqueueEmail } from '../email/email.queue.js';
+import { renderInviteEmail } from '../email/templates/invite-email.js';
 import { SYSTEM_ROLE_PERMISSIONS, type CreateWorkspaceInput, type InviteMemberInput } from './workspace.types.js';
 import type { SystemRoleName } from '../../models/role.model.js';
 
@@ -127,13 +130,47 @@ export async function inviteMember(
   const existing = await WorkspaceMember.findOne({ workspace: workspaceId, user: user._id });
   if (existing) throw AppError.conflict('This user is already a member of the workspace');
 
-  return WorkspaceMember.create({
+  const [workspace, inviter] = await Promise.all([
+    Workspace.findById(workspaceId),
+    User.findById(invitedBy),
+  ]);
+
+  const member = await WorkspaceMember.create({
     workspace: workspaceId,
     user: user._id,
     role: role._id,
     status: 'invited',
     invitedBy,
   });
+
+  if (workspace && inviter) {
+    const { subject, html } = renderInviteEmail({
+      workspaceName: workspace.name,
+      inviterName: inviter.name,
+      roleName: input.roleName,
+      acceptUrl: `${env.WEB_APP_URL}/dashboard/invites`,
+    });
+    await enqueueEmail({ to: user.email, subject, html });
+  }
+
+  return member;
+}
+
+export async function acceptInvite(workspaceId: string, userId: string): Promise<WorkspaceMemberDoc> {
+  const member = await WorkspaceMember.findOne({ workspace: workspaceId, user: userId, status: 'invited' });
+  if (!member) throw AppError.notFound('No pending invite found for this workspace');
+
+  member.status = 'active';
+  member.joinedAt = new Date();
+  await member.save();
+  return member;
+}
+
+export async function listMyInvites(userId: string) {
+  return WorkspaceMember.find({ user: userId, status: 'invited' })
+    .populate('workspace', 'name slug logoUrl')
+    .populate('role', 'name')
+    .populate('invitedBy', 'name email');
 }
 
 export async function updateMember(

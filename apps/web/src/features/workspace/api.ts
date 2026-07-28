@@ -1,6 +1,6 @@
 import { apiClient } from '@/services/api-client';
 import type { Workspace, WorkspaceMembership } from '@/features/auth/types';
-import type { Member, Role } from './types';
+import type { Invite, Member, Role } from './types';
 
 interface ApiEnvelope<T> {
   data: T;
@@ -44,4 +44,13 @@ export async function inviteMember(
 
 export async function removeMember(workspaceId: string, memberId: string): Promise<void> {
   await apiClient.delete(`/workspaces/${workspaceId}/members/${memberId}`);
+}
+
+export async function fetchMyInvites(): Promise<Invite[]> {
+  const res = await apiClient.get<ApiEnvelope<Invite[]>>('/workspaces/invites');
+  return res.data.data;
+}
+
+export async function acceptInvite(workspaceId: string): Promise<void> {
+  await apiClient.post(`/workspaces/${workspaceId}/members/accept`);
 }

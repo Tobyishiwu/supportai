@@ -80,6 +80,24 @@ export async function updateMember(req: Request, res: Response): Promise<void> {
   res.json({ data: member });
 }
 
+export async function listMyInvites(req: Request, res: Response): Promise<void> {
+  const invites = await workspaceService.listMyInvites(req.auth!.userId);
+  res.json({ data: invites });
+}
+
+export async function acceptInvite(req: Request, res: Response): Promise<void> {
+  const member = await workspaceService.acceptInvite(req.params.workspaceId!, req.auth!.userId);
+  await recordAudit({
+    req,
+    action: 'workspace.member.accept',
+    workspace: req.params.workspaceId,
+    actor: req.auth!.userId,
+    targetType: 'WorkspaceMember',
+    targetId: String(member._id),
+  });
+  res.json({ data: member });
+}
+
 export async function removeMember(req: Request, res: Response): Promise<void> {
   await workspaceService.removeMember(req.workspaceId!, req.params.memberId!);
   await recordAudit({

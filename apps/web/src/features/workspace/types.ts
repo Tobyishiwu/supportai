@@ -10,3 +10,11 @@ export interface Member {
   role: { id: string; name: string };
   status: 'invited' | 'active' | 'removed';
 }
+
+export interface Invite {
+  id: string;
+  workspace: { id: string; name: string; slug: string; logoUrl: string | null };
+  role: { id: string; name: string };
+  invitedBy: { id: string; name: string; email: string } | null;
+  createdAt: string;
+}

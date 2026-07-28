@@ -7,6 +7,7 @@ import { seedPermissions } from './modules/workspaces/permissions.seed.js';
 import { startKnowledgeWorker } from './modules/knowledge/queue/knowledge.worker.js';
 import { startAnalyticsWorker } from './modules/analytics/analytics.worker.js';
 import { scheduleNightlyRollup } from './modules/analytics/analytics.queue.js';
+import { startEmailWorker } from './modules/email/email.worker.js';
 import { initSocketServer } from './realtime/socket.js';
 import { createApp } from './app.js';
 
@@ -17,6 +18,7 @@ async function main(): Promise<void> {
 
   const knowledgeWorker = startKnowledgeWorker();
   const analyticsWorker = startAnalyticsWorker();
+  const emailWorker = startEmailWorker();
   await scheduleNightlyRollup();
 
   const app = createApp();
@@ -30,7 +32,7 @@ async function main(): Promise<void> {
   const shutdown = async (signal: string) => {
     logger.info(`Received ${signal}, shutting down gracefully`);
     httpServer.close();
-    await Promise.all([knowledgeWorker.close(), analyticsWorker.close()]);
+    await Promise.all([knowledgeWorker.close(), analyticsWorker.close(), emailWorker.close()]);
     await Promise.all([disconnectMongo(), disconnectRedis()]);
     process.exit(0);
   };

@@ -5,6 +5,7 @@ import {
   BookOpen,
   Inbox,
   LayoutDashboard,
+  Mail,
   Search,
   Settings,
   Sparkles,
@@ -37,6 +38,7 @@ const NAV_ITEMS = [
   { to: '/dashboard/customers', label: 'Customers', icon: UserSquare2 },
   { to: '/dashboard/tickets', label: 'Tickets', icon: Ticket },
   { to: '/dashboard/team', label: 'Team', icon: Users },
+  { to: '/dashboard/invites', label: 'Invites', icon: Mail },
   { to: '/dashboard/settings', label: 'Settings', icon: Settings },
 ] as const;
 

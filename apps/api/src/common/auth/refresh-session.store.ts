@@ -30,3 +30,9 @@ export async function rotateRefreshSession(userId: string, oldJti: string): Prom
   await revokeRefreshSession(userId, oldJti);
   return createRefreshSession(userId);
 }
+
+/** Logs out every device/session for a user — used after a password reset. */
+export async function revokeAllRefreshSessions(userId: string): Promise<void> {
+  const keys = await redis.keys(`refresh:${userId}:*`);
+  if (keys.length > 0) await redis.del(...keys);
+}

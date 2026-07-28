@@ -21,6 +21,9 @@ workspaceRouter.use(authenticate);
 workspaceRouter.post('/', validate({ body: createWorkspaceSchema }), asyncHandler(controller.createWorkspace));
 workspaceRouter.get('/', asyncHandler(controller.listMyWorkspaces));
 
+// Registered before `/:workspaceId` — otherwise that param route would swallow this literal path.
+workspaceRouter.get('/invites', asyncHandler(controller.listMyInvites));
+
 workspaceRouter.get(
   '/:workspaceId',
   validate({ params: workspaceIdParamSchema }),
@@ -56,6 +59,14 @@ workspaceRouter.post(
   resolveWorkspace,
   requirePermission('team:manage'),
   asyncHandler(controller.inviteMember),
+);
+
+// No resolveWorkspace here — the invited user isn't an *active* member yet,
+// which is exactly what resolveWorkspace requires, so it must self-check status instead.
+workspaceRouter.post(
+  '/:workspaceId/members/accept',
+  validate({ params: workspaceIdParamSchema }),
+  asyncHandler(controller.acceptInvite),
 );
 
 workspaceRouter.patch(

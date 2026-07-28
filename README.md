@@ -35,6 +35,8 @@ Architecture and design docs live in [`docs/`](./docs):
   independent ticket board for escalated issues
 - **Multi-tenant workspaces** — RBAC (owner/agent), full tenant isolation,
   audit logging
+- **Transactional email** — team invites and password reset, sent via Resend
+  and processed asynchronously through a BullMQ worker
 
 ## Getting started
 
@@ -51,7 +53,9 @@ pnpm dev:web                  # http://localhost:5173
 
 Set at least `GEMINI_API_KEY` (or `OPENAI_API_KEY`) in `apps/api/.env` to
 exercise the AI chat/knowledge features — everything else works without an
-AI key configured (auth, workspaces, team, inbox UI, tickets).
+AI key configured (auth, workspaces, team, inbox UI, tickets). Likewise, set
+`RESEND_API_KEY` to have invite/password-reset emails actually send — without
+it, they're logged and skipped rather than sent.
 
 ## Testing
 

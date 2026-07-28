@@ -35,3 +35,11 @@ export async function refreshSession(): Promise<string> {
   setAccessToken(res.data.data.accessToken);
   return res.data.data.accessToken;
 }
+
+export async function forgotPasswordRequest(email: string): Promise<void> {
+  await apiClient.post('/auth/forgot-password', { email });
+}
+
+export async function resetPasswordRequest(input: { token: string; password: string }): Promise<void> {
+  await apiClient.post('/auth/reset-password', input);
+}
