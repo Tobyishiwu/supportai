@@ -7,6 +7,7 @@ import { requestId } from './common/middleware/request-id.js';
 import { httpLogger } from './common/middleware/http-logger.js';
 import { globalRateLimiter } from './common/middleware/rate-limit.js';
 import { errorHandler, notFoundHandler } from './common/middleware/error-handler.js';
+import { healthCheck } from './common/middleware/health-check.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { userRouter } from './modules/users/user.routes.js';
 import { workspaceRouter } from './modules/workspaces/workspace.routes.js';
@@ -39,9 +40,7 @@ export function createApp(): Express {
   app.use(cookieParser());
   app.use(globalRateLimiter);
 
-  app.get('/health', (_req, res) => {
-    res.json({ status: 'ok' });
-  });
+  app.get('/health', healthCheck);
 
   app.use('/api/v1/auth', authRouter);
   app.use('/api/v1/users', userRouter);

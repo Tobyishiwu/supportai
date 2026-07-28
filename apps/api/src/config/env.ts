@@ -15,7 +15,10 @@ const envSchema = z.object({
   WIDGET_TOKEN_SECRET: z.string().min(32, 'WIDGET_TOKEN_SECRET must be at least 32 characters'),
 
   WEB_APP_URL: z.string().url().default('http://localhost:5173'),
-  COOKIE_DOMAIN: z.string().default('localhost'),
+  // Optional: only set this if frontend + backend share a parent domain
+  // (e.g. app.example.com / api.example.com). Otherwise a host-only
+  // cookie (the default when unset) is correct — see common/auth/cookies.ts.
+  COOKIE_DOMAIN: z.string().optional(),
 
   GEMINI_API_KEY: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
