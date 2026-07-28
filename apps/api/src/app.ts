@@ -14,6 +14,10 @@ import { notificationRouter } from './modules/notifications/notification.routes.
 import { knowledgeRouter } from './modules/knowledge/knowledge.routes.js';
 import { aiSettingsRouter } from './modules/ai/settings/ai-settings.routes.js';
 import { publicChatRouter } from './modules/conversations/public-chat.routes.js';
+import { conversationRouter } from './modules/conversations/conversation.routes.js';
+import { tagRouter } from './modules/tags/tag.routes.js';
+import { customerRouter } from './modules/customers/customer.routes.js';
+import { ticketRouter } from './modules/tickets/ticket.routes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -44,6 +48,10 @@ export function createApp(): Express {
   app.use('/api/v1/workspaces/:workspaceId/knowledge', knowledgeRouter);
   app.use('/api/v1/workspaces/:workspaceId/ai/settings', aiSettingsRouter);
   app.use('/api/v1/public/:workspaceSlug/chat', publicChatRouter);
+  app.use('/api/v1/workspaces/:workspaceId/conversations', conversationRouter);
+  app.use('/api/v1/workspaces/:workspaceId/tags', tagRouter);
+  app.use('/api/v1/workspaces/:workspaceId/customers', customerRouter);
+  app.use('/api/v1/workspaces/:workspaceId/tickets', ticketRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

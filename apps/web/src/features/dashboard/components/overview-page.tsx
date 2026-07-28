@@ -1,18 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { BarChart3, Inbox, Ticket, UserSquare2 } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useWorkspace } from '@/features/workspace/workspace-provider';
 import { fetchMembers } from '@/features/workspace/api';
 
-const QUICK_LINKS = [
-  { to: '/dashboard/inbox', icon: Inbox, title: 'Live Chat Inbox', phase: 'Phase 5' },
-  { to: '/dashboard/analytics', icon: BarChart3, title: 'Analytics', phase: 'Phase 6' },
-  { to: '/dashboard/customers', icon: UserSquare2, title: 'Customers', phase: 'Phase 5' },
-  { to: '/dashboard/tickets', icon: Ticket, title: 'Tickets', phase: 'Phase 5' },
-] as const;
+const QUICK_LINKS = [{ to: '/dashboard/analytics', icon: BarChart3, title: 'Analytics', phase: 'Phase 6' }] as const;
 
 export function OverviewPage() {
   const { workspace, isLoading: workspaceLoading } = useWorkspace();
