@@ -57,7 +57,7 @@ export async function createWorkspaceForOwner(
               .filter((id): id is Types.ObjectId => id !== undefined),
           }),
         ),
-        { session },
+        { session, ordered: true },
       );
 
       const ownerRole = roleDocs.find((r) => r.name === 'owner');
