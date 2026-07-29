@@ -122,7 +122,7 @@ export function WidgetChatPanel({ workspaceSlug }: { workspaceSlug: string }) {
         {needsHuman && (
           <div className="mt-3 flex items-center gap-2 rounded-md bg-warning/15 px-3 py-2 text-xs text-warning">
             <UserCog className="h-3.5 w-3.5" />
-            This would hand off to a human agent — Phase 5 will build the inbox to receive it.
+            This conversation has been handed off to a human agent — check the Inbox to reply.
           </div>
         )}
 
