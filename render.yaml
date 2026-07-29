@@ -2,7 +2,7 @@ services:
   - type: web
     name: supportai-api
     runtime: node
-    plan: starter
+    plan: free
     region: oregon
     buildCommand: corepack enable && corepack prepare pnpm@10.33.0 --activate && pnpm install --frozen-lockfile && pnpm --filter @supportai/api build
     startCommand: node apps/api/dist/server.js
@@ -47,8 +47,14 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        value: SupportAI <onboarding@resend.dev>
+      - key: KNOWLEDGE_VECTOR_INDEX
+        sync: false
 
   - type: redis
     name: supportai-redis
-    plan: starter
+    plan: free
     ipAllowList: []
