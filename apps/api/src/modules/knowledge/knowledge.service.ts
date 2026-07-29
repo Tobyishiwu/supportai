@@ -6,6 +6,7 @@ import { uploadBuffer } from '../../common/storage/cloudinary.js';
 import { chunkText } from './chunking.js';
 import { getEmbeddingProvider } from '../ai/providers/factory.js';
 import { enqueueDocumentProcessing } from './queue/knowledge.queue.js';
+import { env } from '../../config/env.js';
 
 const FILE_SOURCE_TYPES = ['pdf', 'docx', 'txt', 'markdown'] as const;
 
@@ -129,7 +130,7 @@ export async function retrieveRelevantChunks(
   return KnowledgeChunk.aggregate<RetrievedChunk>([
     {
       $vectorSearch: {
-        index: 'knowledge_vector_index',
+        index: env.KNOWLEDGE_VECTOR_INDEX,
         path: 'embedding',
         queryVector: queryEmbedding,
         numCandidates: limit * 20,

@@ -29,6 +29,11 @@ const envSchema = z.object({
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
 
+  // Name of the Atlas Vector Search index on knowledgechunks.embedding — a
+  // cluster-level index nothing in this app can create (see docs/deployment.md).
+  // Override if your cluster's index ended up with a different name.
+  KNOWLEDGE_VECTOR_INDEX: z.string().default('knowledge_vector_index'),
+
   // Optional: without it, transactional emails (invites, password reset) are
   // logged and skipped rather than sent — everything else works unaffected.
   RESEND_API_KEY: z.string().optional(),
